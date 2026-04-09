@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <title>Central Limit Theorem</title>
+  <meta name="description" content="Quantum, predictive analytics, statistics, risk research, and member resources by ." />
+  <meta name="keywords" content="quantum, predictive analytics, statistics, risk, data science, machine learning, research" />
+  <meta property="og:title" content="Your Page Title –" />
+  <meta property="og:description" content="Quantum, predictive analytics, statistics, risk research, and member resources by ." />
+  <meta property="og:image" content="/assets/quantum" />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+
+  <script type="module" src="/auth-config.js" defer></script>
+  <script type="module" src="/auth.js" defer></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    :root {
+      --primary: #001f3f;
+      --accent: #00b4d8;
+      --secondary: #90e0ef;
+      --neutral: #adb5bd;
+      --warning: #ff4136;
+      --success: #2ecc71;
+      --bg-dark: #03071e;
+      --bg: #000000;
+      --text-primary: #FFFFFF;
+      --text-secondary: #CCCCCC;
+      --text-muted: #999999;
+      --surface: #111111;
+      --surface-hover: #1E1E1E;
+      --border: #333333;
+      --accent-hover: #EEEEEE;
+      --highlight: #00DDFF;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Consistent Header */
+    .main-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .main-nav a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .main-nav a:hover, .main-nav a.active {
+      color: var(--accent);
+    }
+    .brand {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent) !important;
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropbtn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: var(--surface);
+      min-width: 280px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.25s ease;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-content a {
+      color: var(--text-secondary);
+      padding: 0.8rem 1.2rem;
+      display: block;
+    }
+    .dropdown-content a:hover {
+      background: var(--surface-hover);
+      color: var(--accent);
+    }
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 5% 5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--highlight);
+      padding-left: 1.5rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin: 2rem 0;
+      font-size: 1.2rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      background: #fff;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--surface);
+      padding: 2rem 5%;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .logout-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--text-muted);
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      margin: 0.5rem;
+      transition: all 0.3s;
+    }
+    .logout-btn:hover {
+      background: var(--surface-hover);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    footer p, footer a {
+      color: var(--text-muted);
+      margin: 1rem 0;
+    }
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      .main-nav { flex-direction: column; text-align: center; }
+      .nav-left, .nav-right { gap: 1rem; justify-content: center; }
+      iframe { height: 600px; }
+    }
+  
+    /* Shared header/footer */
+
+    .google-btn {
+      position: relative;
+      padding-left: 60px;
+      background: #ffffff;
+      color: #202124;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    }
+    .google-btn::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #f1f3f4;
+      border: 1px solid rgba(26, 115, 232, 0.25);
+      box-shadow: inset 0 0 0 2px #1a73e8;
+    }
+    .google-btn:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      background: var(--surface, rgba(6, 18, 32, 0.92));
+      border-bottom: 1px solid var(--border, rgba(127, 219, 255, 0.2));
+    }
+    .site-header .main-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 5%;
+      flex-wrap: wrap;
+    }
+    .site-header .nav-left,
+    .site-header .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      flex-wrap: wrap;
+    }
+    .site-header a {
+      text-decoration: none;
+      color: var(--text-secondary, #d6e6f2);
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .site-header a:hover {
+      color: var(--accent, #7fdbff);
+    }
+    .site-header .brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--accent, #7fdbff) !important;
+    }
+    .site-header .nav-sep {
+      color: var(--text-muted, #99aabb);
+      opacity: 0.6;
+    }
+    .site-header .dropdown {
+      position: relative;
+    }
+    .site-header .dropbtn {
+      background: none;
+      border: none;
+      color: var(--text-secondary, #d6e6f2);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .site-header .dropbtn::after {
+      content: "▼";
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    .site-header .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: var(--surface, rgba(6, 18, 32, 0.98));
+      min-width: 260px;
+      border: 1px solid var(--border, rgba(127, 219, 255, 0.2));
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      padding: 0.4rem 0;
+      z-index: 1000;
+    }
+    .site-header .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .site-header .dropdown-content a {
+      display: block;
+      padding: 0.6rem 1rem;
+      color: var(--text-secondary, #d6e6f2);
+    }
+    .site-header .dropdown-content a:hover {
+      background: rgba(127, 219, 255, 0.12);
+      color: var(--accent, #7fdbff);
+    }
+    .user-chip {
+      display: none;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.25rem 0.7rem 0.25rem 0.4rem;
+      border-radius: 999px;
+      border: none;
+      background: rgba(8, 20, 36, 0.75);
+      color: var(--text-secondary, #d6e6f2);
+      font-size: 0.9rem;
+    }
+    .user-chip.show {
+      display: inline-flex;
+    }
+    .user-chip img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: none;
+      background: transparent;
+    }
+
+    .nav-call-to {
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent, #7fdbff);
+      background: var(--accent, #7fdbff);
+      color: var(--ink, #00112a);
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .nav-call-to:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+    }
+    .nav-call-to.ghost {
+      background: transparent;
+      color: var(--text-secondary, #d6e6f2);
+      border-color: var(--border, rgba(127, 219, 255, 0.35));
+    }
+    .site-footer {
+      margin-top: 3rem;
+      background: var(--surface, rgba(6, 18, 32, 0.92));
+      border-top: 1px solid var(--border, rgba(127, 219, 255, 0.2));
+      padding: 2rem 5% 2.5rem;
+    }
+    .site-footer a {
+      color: var(--text-secondary, #d6e6f2);
+      text-decoration: none;
+    }
+    .site-footer a:hover {
+      color: var(--accent, #7fdbff);
+    }
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: var(--text-secondary, #d6e6f2);
+      font-weight: 600;
+    }
+    .footer-tag {
+      font-size: 0.9rem;
+      color: var(--text-muted, #9aa8b5);
+      font-weight: 400;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .footer-copy {
+      text-align: center;
+      margin: 0;
+      color: var(--text-muted, #9aa8b5);
+      font-size: 0.9rem;
+    }
+    @media (max-width: 900px) {
+      .site-header .main-nav {
+        justify-content: center;
+      }
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-actions {
+        justify-content: center;
+      }
+    }
+
+  
+    /* Floating Join CTA */
+    .join-today {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 1200;
+    }
+    .join-today a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.4rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff6b5e, #ff9a62);
+      color: #0b0f17;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .join-today a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.4);
+    }
+    @media (max-width: 700px) {
+      .join-today {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+      .join-today a {
+        width: 100%;
+      }
+    }
+
+  
+    /* Auth gate */
+    body.auth-locked #protected-content {
+      display: none;
+    }
+    body.auth-ready #protected-content {
+      display: block;
+    }
+    .auth-gate {
+      margin: 3rem auto 2rem;
+      padding: 2rem 5%;
+      display: flex;
+      justify-content: center;
+    }
+    .auth-gate-card {
+      max-width: 760px;
+      width: 100%;
+      padding: 2rem 2.2rem;
+      border-radius: 16px;
+      background: rgba(8, 20, 36, 0.82);
+      border: 1px solid rgba(127, 219, 255, 0.25);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      text-align: center;
+    }
+    .auth-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.75rem;
+      color: rgba(127, 219, 255, 0.8);
+      margin-bottom: 0.6rem;
+    }
+    .auth-gate h1 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin-bottom: 0.6rem;
+    }
+    .auth-gate p {
+      color: var(--text-secondary, #d6e6f2);
+      margin-bottom: 1.2rem;
+    }
+    .auth-login-btn {
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #7fdbff, #31c3ff);
+      color: #00112a;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .auth-login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.35);
+    }
+    body.auth-ready .auth-gate {
+      display: none;
+    }
+    body.auth-locked .join-today,
+    body.auth-locked a[href*="purchase-premium"],
+    body.auth-locked #logout-btn {
+      display: none !important;
+    }
+
+  
+    /* Mobile readability */
+    @media (max-width: 768px) {
+      body { font-size: 16px; }
+      h1 { font-size: 2rem; line-height: 1.2; }
+      h2 { font-size: 1.6rem; }
+      h3 { font-size: 1.25rem; }
+      p, li { font-size: 1rem; }
+      main { padding: 2rem 1.25rem; }
+      .main-nav { padding: 0.9rem 1rem; }
+      .nav-left, .nav-right { gap: 0.75rem; }
+      .cta-row, .cta-actions { flex-direction: column; align-items: center; }
+      .cta-row .btn, .cta-row .cta-link, .cta-actions a { width: 100%; }
+      img, video, iframe { max-width: 100%; height: auto; }
+      iframe { width: 100%; }
+      .slides-container, .member-links, .hero-video, .dolphin-video { padding: 0; margin: 1rem 0; }
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      h1 { font-size: 1.5rem; line-height: 1.3; }
+      h2 { font-size: 1.3rem; }
+      h3 { font-size: 1.1rem; }
+      p, li { font-size: 0.95rem; }
+      main { padding: 1.5rem 2%; }
+      .main-nav { padding: 0.75rem 1.5%; flex-direction: column; }
+      .nav-left, .nav-right { gap: 0.5rem; width: 100%; justify-content: center; }
+      .nav-sep { display: none; }
+      .brand { font-size: 1.05rem; }
+      .cta-row .btn, .cta-row .cta-link, .cta-actions a { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      body { font-size: 14px; line-height: 1.5; }
+      h1 { font-size: 1.3rem; line-height: 1.2; }
+      h2 { font-size: 1.15rem; }
+      h3 { font-size: 1rem; }
+      p, li { font-size: 0.9rem; }
+      main { padding: 1rem 1.5%; }
+      .main-nav { padding: 0.7rem 1%; }
+      .nav-left, .nav-right { gap: 0.4rem; }
+      .brand { font-size: 0.95rem; }
+      .cta-row, .cta-actions { gap: 0.5rem; }
+      .cta-row .btn, .cta-row .cta-link, .cta-actions a { width: 100%; font-size: 0.9rem; }
+      .title-icon { width: 28px; height: 28px; }
+    }
+
+  
+    .title-icon {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      margin-right: 10px;
+      vertical-align: middle;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+    }
+
+      /* Mobile Menu Toggle Button */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .menu-toggle span {
+      width: 24px;
+      height: 2.5px;
+      background: var(--accent, #7fdbff);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      display: block;
+    }
+    
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+    
+    /* Mobile Navigation Styles */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .site-header .main-nav,
+      .main-nav {
+        flex-wrap: wrap;
+      }
+      
+      .site-header .nav-left,
+      .site-header .nav-right,
+      .nav-left,
+      .nav-right {
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        display: none;
+        padding: 0.5rem 0;
+      }
+      
+      .site-header .nav-left.show,
+      .site-header .nav-right.show,
+      .nav-left.show,
+      .nav-right.show {
+        display: flex;
+      }
+      
+      .site-header .nav-left a,
+      .site-header .nav-right a,
+      .site-header .nav-left .dropdown,
+      .site-header .nav-right .dropdown,
+      .nav-left a,
+      .nav-right a,
+      .nav-left .dropdown,
+      .nav-right .dropdown {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        display: block;
+      }
+      
+      .site-header .nav-left .dropdown .dropbtn,
+      .site-header .nav-right .dropdown .dropbtn,
+      .nav-left .dropdown .dropbtn,
+      .nav-right .dropdown .dropbtn {
+        width: 100%;
+        text-align: left;
+      }
+      
+      .site-header .dropdown-content,
+      .dropdown-content {
+        position: static;
+        display: none;
+        min-width: unset;
+        background: rgba(6, 18, 32, 0.6);
+        border: none;
+        box-shadow: inset 0 0 0 1px rgba(127, 219, 255, 0.1);
+      }
+      
+      .site-header .dropdown.active .dropdown-content,
+      .dropdown.active .dropdown-content {
+        display: block;
+      }
+      
+      .site-header .nav-sep,
+      .nav-sep {
+        display: none;
+      }
+    }
+
+    /* --- INJECTED PRESENTATION STYLES (Native Integration) --- */
+    .presentation-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 5%;
+      gap: 2.5rem;
+    }
+    .slide {
+      background-color: var(--surface);
+      width: 100%;
+      max-width: 850px;
+      padding: 45px;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      border-top: 4px solid var(--accent);
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      box-sizing: border-box;
+      position: relative;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(127, 219, 255, 0.03), transparent 60%);
+      pointer-events: none;
+      border-radius: 12px;
+    }
+    .title-slide {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 400px;
+    }
+    .slide h1, .slide h2 {
+      color: var(--highlight);
+      margin-top: 0;
+    }
+    .slide h1 {
+      font-size: 2.4em;
+      margin-bottom: 15px;
+      text-shadow: 0 2px 10px rgba(0,221,255,0.2);
+    }
+    .slide h2 {
+      font-size: 1.7em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .author-info {
+      font-size: 1.2em;
+      margin-top: 25px;
+      color: var(--text-secondary);
+      background-color: rgba(255,255,255,0.03);
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      align-self: center;
+      border-left: 3px solid var(--accent);
+    }
+    .slide ul {
+      padding-left: 25px;
+    }
+    .slide li {
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      color: var(--text-secondary);
+    }
+    .slide li::marker {
+      color: var(--accent);
+    }
+    .equation {
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      overflow-x: auto;
+      color: var(--text-primary);
+    }
+    .caption {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 15px;
+      font-style: italic;
+    }
+    .image-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 25px 0;
+    }
+    .image-wrapper img {
+      max-width: 100%;
+      max-height: 400px;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+    .slide table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      font-size: 1em;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .slide th, .slide td {
+      border: 1px solid var(--border);
+      padding: 15px;
+      text-align: left;
+      color: var(--text-secondary);
+    }
+    .slide th {
+      background-color: rgba(255,255,255,0.05);
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .slide tr:nth-child(even) {
+      background-color: rgba(255,255,255,0.02);
+    }
+    .slide pre {
+      background-color: rgba(0,0,0,0.6);
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+    .slide code {
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      color: #9cdcfe; /* Slight blue tint for code to read well on dark */
+    }
+    .thank-you-slide {
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: 700;
+      color: var(--highlight);
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body class="auth-locked">
+
+  <header class="site-header">
+    <nav class="main-nav">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="nav-left">
+        <a href="/homeindex.html" class="brand">Samuel Castillo</a>
+        <span class="nav-sep">/</span>
+        <a href="/qubits-2048.html">Quantum</a>
+        <a href="/language.html">Language</a>
+      </div>
+      <div class="nav-right">
+        <a href="/members.html">Members</a>
+        <a href="/bigdata.html">Big Data</a>
+        <a href="/code.html">Code</a>
+        <a href="/about.html#go-premium">PA-R Study Manual</a>
+        <div class="dropdown">
+          <button class="dropbtn">Research</button>
+          <div class="dropdown-content">
+            <a href="/github_pages_american_statistical_association_datafest.html">ASA DataFest 2025</a>
+            <a href="/github_pages_central_limit_theorem.html">Central Limit Theorem</a>
+            <a href="/github_pages_from_algorithms_to_actuarial_science.html">From Algorithms to Actuarial Science</a>
+            <a href="/github_pages_identifying_actionable_treatment_variation.html">Identifying Actionable Treatment Variation</a>
+            <a href="/github_pages_linear_algebra.html">Linear Algebra Notes</a>
+            <a href="/github_pages_loss_development_triangles.html">Loss Development Triangles</a>
+            <a href="/github_pages_grocery_stores.html">Grocery Store Supply Modeling</a>
+            <a href="/github_pages_predictive_modeling_app.html">Predictive Modeling App</a>
+            <a href="/github_pages_prompt_engineering.html">Prompt Engineering Guide</a>
+            <a href="/github_pages_real_estate_house_prices.html">Real Estate House Price Modeling</a>
+            <a href="/github_pages_sas_for_statistics_healthcare.html">SAS for Healthcare Statistics</a>
+            <a href="/github_pages_soa_predictive_modeling_research.html">SOA Predictive Modeling Research</a>
+            <a href="/github_pages_value_investing_time_series.html">Value Investing & Time-Series Analysis</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn">About</button>
+          <div class="dropdown-content">
+            <a href="https://a.co/d/6AeMaOp" target="_blank">Amazon Book</a>
+            <a href="/about.html">About</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/privacy.html">Privacy</a>
+            <a href="/terms.html">Terms</a>
+          </div>
+        </div>
+        
+        <div class="user-chip" id="user-chip" aria-hidden="true">
+          <img loading="lazy" id="user-avatar" alt="">
+          <span id="user-name"></span>
+        </div>
+        <a class="nav-call-to" href="/members.html#purchase-premium">Go Premium</a>
+      </div>
+    </nav>
+  </header>
+
+  
+  <section class="auth-gate" id="auth-gate">
+    <div class="auth-gate-card">
+      <p class="auth-eyebrow" data-i18n="auth_eyebrow">Quantum - Predictive - Statistics - Risk - AI</p>
+      <h1 data-i18n="auth_title">Sign in to unlock the full research library</h1>
+      <p data-i18n="auth_body">Member-only notes, models, and case studies. </p>
+      <button id="login-btn" class="auth-login-btn google-btn" data-i18n="auth_button">Sign in with Google</button>
+    </div>
+  </section>
+  <div id="protected-content">
+
+ <div class="presentation-container">
+
+    <div class="slide title-slide">
+        <h1>The Riemann Zeta Function: Zeros, the Critical Line, and Computational Exploration</h1>
+        <div class="author-info">
+            <strong>Samuel Castillo</strong><br>
+            University of Massachusetts Amherst<br>
+            Predictive Analytics<br>
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>Introduction</h2>
+        <ul>
+            <li>For $\Re(s)>1$, the Riemann zeta function is
+                <div class="equation">$$\zeta(s)=\sum_{n=1}^{\infty}\frac{1}{n^s}.$$</div>
+            </li>
+            <li>Euler's product formula links the zeta function directly to the primes:
+                <div class="equation">$$\zeta(s)=\prod_p\left(1-p^{-s}\right)^{-1}.$$</div>
+            </li>
+            <li>Central thesis: the non-trivial zeros of $\zeta(s)$ govern the oscillatory behavior of prime counting.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>From Euler's Basel Problem to Primes</h2>
+        <ul>
+            <li>Euler solved the Basel problem:
+                <div class="equation">$$\sum_{n=1}^{\infty}\frac{1}{n^2}=\frac{\pi^2}{6},\qquad \zeta(2)=\frac{\pi^2}{6}.$$</div>
+            </li>
+            <li>This showed that a purely arithmetic series could evaluate to an expression involving $\pi$.</li>
+            <li>Riemann later extended $\zeta(s)$ to the complex plane (except for a simple pole at $s=1$) and connected its zeros to the distribution of primes.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Prime Density and the Big Picture</h2>
+        <ul>
+            <li>Prime Number Theorem:
+                <div class="equation">$$\pi(x)\sim \frac{x}{\log x}.$$</div>
+            </li>
+            <li>The zeros of $\zeta(s)$ control deviations from this leading approximation.</li>
+            <li>Related prime phenomena:
+                <ul>
+                    <li>Mersenne primes: $2^p-1$ with $p$ prime necessary but not sufficient.</li>
+                    <li>Twin primes: pairs $(p,p+2)$ such as $(29,31)$.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Visualizing Zeta Function Zeros</h2>
+        <ul>
+            <li>Non-trivial zeros lie in the critical strip
+                <div class="equation">$$0<\Re(s)<1.$$</div>
+            </li>
+            <li>The Riemann Hypothesis asserts that all non-trivial zeros lie on
+                <div class="equation">$$\Re(s)=\tfrac12.$$</div>
+            </li>
+            <li>Three useful visualization modes:
+                <ul>
+                    <li><strong>Phase plots</strong>: hue encodes $\arg(\zeta(s))$ and brightness encodes $|\zeta(s)|$.</li>
+                    <li><strong>Contour plots</strong>: intersections of $\Re(\zeta(s))=0$ and $\Im(\zeta(s))=0$ locate zeros.</li>
+                    <li><strong>3D surfaces</strong>: minima of $|\zeta(s)|$ reveal the zero set geometrically.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Phase Plot (Domain Coloring)</h2>
+        <div class="image-wrapper">
+            <img src="assets/zeta_phase_corrected.png" alt="Phase plot domain coloring of zeta function">
+        </div>
+        <div class="caption">
+            Hue represents $\arg(\zeta(s))$, brightness represents $|\zeta(s)|$, and zeros appear as phase singularities near $\Re(s)=\tfrac12$.
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>Three-Dimensional Surface of $|\zeta(s)|$</h2>
+        <div class="image-wrapper">
+            <img src="assets/z3d.png" alt="Three-Dimensional Surface of zeta function">
+        </div>
+        <div class="caption">
+            The non-trivial zeros appear as localized minima of $|\zeta(s)|$ rather than as a continuous trench along the critical line.
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>Numerical Contour Plot in the Critical Strip</h2>
+        <div class="image-wrapper">
+            <img src="assets/rzt.png" alt="Numerical Contour Plot in the Critical Strip">
+        </div>
+        <div class="caption">
+            Red curves show $\Re(\zeta(s))=0$, green curves show $\Im(\zeta(s))=0$, and their intersections align numerically with the critical line.
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>The Critical Line and the Riemann Hypothesis</h2>
+        <ul>
+            <li>Functional equation:
+                <div class="equation">$$\zeta(s)=2^s\pi^{s-1}\sin\!\left(\frac{\pi s}{2}\right)\Gamma(1-s)\zeta(1-s).$$</div>
+            </li>
+            <li>This relates $s$ and $1-s$ and extends $\zeta(s)$ to the complex plane apart from the pole at $s=1$.</li>
+            <li><strong>Riemann Hypothesis:</strong> every non-trivial zero lies on $\Re(s)=\tfrac12$.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Why the Hypothesis Matters</h2>
+        <ul>
+            <li>Extensive computation has verified enormous numbers of zeros on the critical line.</li>
+            <li>The zeros enter prime-counting formulas such as
+                <div class="equation">$$\pi(x)=\mathrm{Li}(x)-\sum_\rho \mathrm{Li}(x^\rho)+\text{lower-order terms}.$$</div>
+            </li>
+            <li>RH implies an optimal-order error term in the Prime Number Theorem:
+                <div class="equation">$$\pi(x)=\mathrm{Li}(x)+O\!\left(x^{1/2}\log x\right).$$</div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Prime Density and the Explicit Formula</h2>
+        <ul>
+            <li>A central bridge between zeros and primes is the explicit formula
+                <div class="equation">$$\psi(x)=x-\sum_\rho \frac{x^\rho}{\rho}-\log(2\pi)-\frac12\log(1-x^{-2}).$$</div>
+            </li>
+            <li>The zeros contribute oscillatory corrections to the main term $x$.</li>
+            <li>Related asymptotics:
+                <div class="equation">$$P(n\text{ prime})\approx \frac{1}{\ln n}, \qquad \mathrm{Li}(x)\sim \frac{x}{\ln x}.$$</div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Computational and AI-Assisted Approaches</h2>
+        <ul>
+            <li><strong>Numerical contour analysis:</strong> approximate zeros and visualize local spacing behavior.</li>
+            <li><strong>Automated theorem search:</strong> explore large proof spaces and useful intermediate lemmas.</li>
+            <li><strong>Large-scale verification:</strong> test zero locations to increasing heights.</li>
+            <li>These methods do <em>not</em> prove RH, but they expand the range of meaningful experiments.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Cryptographic Motivation</h2>
+        <ul>
+            <li>Classical ciphers (Caesar shifts, keyword substitution) are broken by brute force or frequency analysis.</li>
+            <li>Modern public-key systems rely on hard number-theoretic problems such as integer factorization.</li>
+        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>System</th>
+                    <th>Key space / scale</th>
+                    <th>Attack</th>
+                    <th>Break time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Caesar cipher</td>
+                    <td>25 keys</td>
+                    <td>Brute force</td>
+                    <td>Instant</td>
+                </tr>
+                <tr>
+                    <td>Keyword substitution</td>
+                    <td>structured</td>
+                    <td>Frequency analysis</td>
+                    <td>Seconds–minutes</td>
+                </tr>
+                <tr>
+                    <td>DES (56-bit)</td>
+                    <td>$2^{56}$</td>
+                    <td>Exhaustive search</td>
+                    <td>Hours–days</td>
+                </tr>
+                <tr>
+                    <td>RSA-2048</td>
+                    <td>very large modulus</td>
+                    <td>Factorization</td>
+                    <td>Infeasible classically</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="slide">
+        <h2>Conclusion</h2>
+        <ul>
+            <li>Euler opened one door into the zeta function through special values such as $\zeta(2)=\pi^2/6$.</li>
+            <li>Riemann opened a deeper door: the zeros of $\zeta(s)$ govern the fine structure of the primes.</li>
+            <li>Computational plots make this connection concrete, even though they do not constitute a proof.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Future Work</h2>
+        <ul>
+            <li>High-precision numerical approximation of $\zeta(s)$ along the critical line.</li>
+            <li>Improved visualization using domain coloring, contour plots, and surface plots.</li>
+            <li>Computational experiments with truncated explicit formulas for $\psi(x)$ and $\pi(x)$.</li>
+            <li>Exploratory AI-based analysis of zero spacing, clustering, and prime-related data.</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Appendix: Python Code for the Phase Plot</h2>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import mpmath as mp
+from matplotlib.colors import hsv_to_rgb
+
+mp.dps = 30
+re_vals = np.linspace(0.35, 0.65, 500)
+im_vals = np.linspace(10.0, 32.0, 700)
+Re, Im = np.meshgrid(re_vals, im_vals)
+phase = np.zeros_like(Re, dtype=float)
+magnitude = np.zeros_like(Re, dtype=float)
+
+for i in range(Re.shape[0]):
+    for j in range(Re.shape[1]):
+        s = mp.mpc(float(Re[i, j]), float(Im[i, j]))
+        z = mp.zeta(s)
+        phase[i, j] = float(mp.arg(z))
+        magnitude[i, j] = float(abs(z))
+
+phase_norm = (phase + np.pi) / (2 * np.pi)
+value = 1.0 / (1.0 + magnitude)
+hsv = np.dstack((phase_norm, np.ones_like(value), value))
+rgb = hsv_to_rgb(hsv)
+</code></pre>
+    </div>
+
+    <div class="slide">
+        <h2>Appendix: Python Code for the Surface Plot</h2>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import mpmath as mp
+from mpl_toolkits.mplot3d import Axes3D
+
+mp.dps = 30
+re_vals = np.linspace(0.2, 0.8, 160)
+im_vals = np.linspace(10.0, 35.0, 220)
+Re, Im = np.meshgrid(re_vals, im_vals)
+Z_abs = np.zeros_like(Re, dtype=float)
+
+for i in range(Re.shape[0]):
+    for j in range(Re.shape[1]):
+        s = mp.mpc(float(Re[i, j]), float(Im[i, j]))
+        Z_abs[i, j] = float(abs(mp.zeta(s)))
+
+Z_plot = np.log1p(Z_abs)
+# plot_surface(Re, Im, Z_plot) and save figure as z3d.png
+</code></pre>
+    </div>
+
+    <div class="slide thank-you-slide">
+        Thank you!
+    </div>
+
+ </div>
+
+    </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span>Samuel Castillo</span>
+        <span class="footer-tag">Quantum + Data Research</span>
+      </div>
+      <div class="footer-links">
+        <a href="/homeindex.html">Home</a>
+        <a href="/members.html">Members</a>
+        <a href="/bigdata.html">Big Data</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div class="footer-actions">
+        <a class="nav-call-to" id="amazon-book-call-to" href="https://a.co/d/6AeMaOp" target="_blank">Buy the Book</a>
+        <a class="nav-call-to" href="/members.html#purchase-premium">Go Premium</a>
+        <button class="nav-call-to ghost" id="logout-btn" type="button" onclick="logout()">Log out</button>
+      </div>
+    </div>
+    <p class="footer-copy">2026 Samuel Castillo</p>
+  </footer>
+
+  <script>
+    // Highlight current page
+    const currentPage = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.main-nav a').forEach(link => {
+      if (link.getAttribute('href').endsWith(currentPage)) {
+        link.classList.add('active');
+      }
+    });
+
+    // Logout function
+    async function logout() {
+      if (typeof auth0Client !== 'undefined') {
+        await auth0Client.logout({
+          logoutParams: { returnTo: window.location.origin + '/index.html' }
+        });
+      } else {
+        window.location.href = '/index.html';
+      }
+    }
+  </script>
+
+  <div class="join-today">
+    <a href="/members.html#purchase-premium">Join Predictive Insights</a>
+  </div>
+
+  
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+  <script>
+    let auth0Client;
+    const domain = 'dev-hsmyim6kzl743yz0.us.auth0.com';
+    const clientId = 'lo8WJdsOHtE8Urz1dzunYIk17irwqD8m';
+
+    const translations = {
+      en: {
+        auth_eyebrow: 'Quantum - Predictive - Statistics - Risk - AI',
+        auth_title: 'Sign in to unlock the full research library',
+        auth_body: 'Member-only notes, models, and case studies. ',
+        auth_button: '    Sign in with Google'
+      },
+      es: {
+        auth_eyebrow: 'Quantum - Predictive - Estadistica - Riesgo - IA',
+        auth_title: 'Inicia sesion para desbloquear la biblioteca completa',
+        auth_body: 'Notas, modelos y casos para miembros. Inicia sesion con Google para continuar.',
+        auth_button: 'Iniciar sesion con Google'
+      },
+      fr: {
+        auth_eyebrow: 'Quantum - Predictive - Statistiques - Risque - IA',
+        auth_title: 'Connectez-vous pour debloquer la bibliotheque complete',
+        auth_body: 'Notes, modeles et etudes reserves aux membres. Connectez-vous avec Google.',
+        auth_button: 'Se connecter avec Google'
+      },
+      pt: {
+        auth_eyebrow: 'Quantum - Predictive - Estatistica - Risco - IA',
+        auth_title: 'Entre para desbloquear a biblioteca completa',
+        auth_body: 'Notas, modelos e casos para membros. Entre com Google para continuar.',
+        auth_button: 'Entrar com Google'
+      },
+      de: {
+        auth_eyebrow: 'Quantum - Predictive - Statistik - Risiko - KI',
+        auth_title: 'Anmelden, um die komplette Bibliothek freizuschalten',
+        auth_body: 'Notizen, Modelle und Fallstudien nur fur Mitglieder. Mit Google anmelden.',
+        auth_button: 'Mit Google anmelden'
+      }
+    };
+
+    function applyTranslations() {
+      const lang = (navigator.language || 'en').toLowerCase();
+      const key = lang.split('-')[0];
+      const t = translations[key] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) {
+          el.textContent = t[k];
+        }
+      });
+    }
+
+    async function populateUserUI() {
+      const user = await auth0Client.getUser();
+      if (!user) return;
+      const chip = document.getElementById('user-chip');
+      const nameEl = document.getElementById('user-name');
+      const avatar = document.getElementById('user-avatar');
+      if (nameEl) {
+        nameEl.textContent = user.name || user.nickname || user.email || 'Member';
+      }
+      if (avatar) {
+        if (user.picture) {
+          avatar.src = user.picture;
+          avatar.alt = (user.name || 'Member') + ' profile';
+        } else {
+          avatar.style.display = 'none';
+        }
+      }
+      if (chip) {
+        chip.classList.add('show');
+        chip.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    async function initAuthGate() {
+      applyTranslations();
+      auth0Client = await auth0.createAuth0Client({
+        domain: domain,
+        clientId: clientId,
+        cacheLocation: 'localstorage',
+        useRefreshTokens: true,
+        authorizationParams: {
+          redirect_uri: window.location.href.split(/[?#]/)[0]
+        }
+      });
+
+      if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+        await auth0Client.handleRedirectCallback();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      await auth0Client.checkSession();
+      const isAuthenticated = await auth0Client.isAuthenticated();
+      if (isAuthenticated) {
+        document.body.classList.remove('auth-locked');
+        document.body.classList.add('auth-ready');
+        await populateUserUI();
+      }
+
+      const loginBtn = document.getElementById('login-btn');
+      if (loginBtn) {
+        loginBtn.addEventListener('click', async () => {
+          await auth0Client.loginWithRedirect({
+            authorizationParams: {
+              connection: 'google-oauth2'
+            }
+          });
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initAuthGate);
+  </script>
+
+<script>
+  if (localStorage.getItem('member_access') !== 'true') {
+    window.location.href = 'index.html';
+  }
+</script><script>
+  // Require sign-in to view this page.
+  if (localStorage.getItem('member_access') !== 'true') {
+    const path = location.pathname.split('/').pop();
+    if (path && path !== 'index.html') {
+      window.location.href = 'index.html';
+    }
+  }
+</script>
+<script>
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLeft = document.querySelector('.nav-left');
+    const navRight = document.querySelector('.nav-right');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        menuToggle.classList.toggle('active');
+        navLeft.classList.toggle('show');
+        navRight.classList.toggle('show');
+      });
+    }
+    
+    // Handle dropdown menus in mobile
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+      const dropbtn = dropdown.querySelector('.dropbtn');
+      if (dropbtn) {
+        dropbtn.addEventListener('click', function(e) {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            dropdown.classList.toggle('active');
+          }
+        });
+      }
+    });
+    
+    // Close menu when clicking on a link
+    const navLinks = document.querySelectorAll('.nav-left a, .nav-right a:not(.dropdown .dropbtn)');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          menuToggle.classList.remove('active');
+          navLeft.classList.remove('show');
+          navRight.classList.remove('show');
+          // Close any open dropdowns
+          dropdowns.forEach(dd => dd.classList.remove('active'));
+        }
+      });
+    });
+  });
+</script>
+<div id="cookie-banner" style="display: none;">
+  <span>We use cookies to enhance your experience. By continuing, you agree to our use of cookies. <a href="/privacy" style="color: #7fdbff;">Learn more</a>.</span>
+  <button id="accept-cookies">Accept</button>
+  <button id="decline-cookies">Decline</button>
+</div>
+
+<div class="join-today">
+  <a href="/members.html#purchase-premium">Join Predictive Insights</a>
+</div>
+
+
+
+<script>
+  // Cookie Management
+  const cookieName = 'cookie_consent';
+  const cookieExpiryDays = 365;
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = name + '=' + value + '; expires=' + date.toUTCString() + '; path=/; SameSite=Lax; Secure';
+  }
+
+  const consent = getCookie(cookieName);
+  if (!consent) {
+    document.getElementById('cookie-banner').style.display = 'block';
+  }
+
+  document.getElementById('accept-cookies').addEventListener('click', function() {
+    setCookie(cookieName, 'accepted', cookieExpiryDays);
+    document.getElementById('cookie-banner').style.display = 'none';
+  });
+
+  document.getElementById('decline-cookies').addEventListener('click', function() {
+    setCookie(cookieName, 'declined', cookieExpiryDays);
+    document.getElementById('cookie-banner').style.display = 'none';
+  });
+</script>
+</body>
+</html>
