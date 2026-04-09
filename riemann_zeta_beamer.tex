@@ -1,0 +1,308 @@
+\documentclass[aspectratio=43]{beamer}
+\usetheme{CCNU}
+
+\usepackage{slashed}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cancel}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% If your images are stored in a folder, update this path.
+\graphicspath{{./}{plots/}}
+
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
+\def\mydate{\leavevmode\hbox{\the\year-\twodigits\month-\twodigits\day}}
+\def\twodigits#1{\ifnum#1<10 0\fi\the#1}
+
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright
+  \centering#2
+  \end{minipage}%
+  }%
+}
+
+\def\meetingname{Predictive Analytics}
+
+\title[\meetingname]{The Riemann Zeta Function: Zeros, the Critical Line, and Computational Exploration}
+\author[G Shan]{Samuel Castillo}
+\institute[UMass Amherst]{University of Massachusetts Amherst}
+\date[\mydate]{\meetingname\\\today}
+
+\lstset{
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    showstringspaces=false,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red}
+}
+
+\begin{document}
+
+\begin{frame}[plain,t]
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Contents}
+\tableofcontents
+\end{frame}
+
+%------------------------------------------------------------
+\section{Introduction}
+
+\begin{frame}{Introduction}
+\begin{itemize}
+    \item For $\Re(s)>1$, the Riemann zeta function is
+    \[
+    \zeta(s)=\sum_{n=1}^{\infty}\frac{1}{n^s}.
+    \]
+    \item Euler's product formula links the zeta function directly to the primes:
+    \[
+    \zeta(s)=\prod_p\left(1-p^{-s}\right)^{-1}.
+    \]
+    \item Central thesis: the non-trivial zeros of $\zeta(s)$ govern the oscillatory behavior of prime counting.
+\end{itemize}
+\end{frame}
+
+\section{From Basel to Prime Number Theory}
+
+\begin{frame}{From Euler's Basel Problem to Primes}
+\begin{itemize}
+    \item Euler solved the Basel problem:
+    \[
+    \sum_{n=1}^{\infty}\frac{1}{n^2}=\frac{\pi^2}{6},\qquad \zeta(2)=\frac{\pi^2}{6}.
+    \]
+    \item This showed that a purely arithmetic series could evaluate to an expression involving $\pi$.
+    \item Riemann later extended $\zeta(s)$ to the complex plane (except for a simple pole at $s=1$) and connected its zeros to the distribution of primes.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Prime Density and the Big Picture}
+\begin{itemize}
+    \item Prime Number Theorem:
+    \[
+    \pi(x)\sim \frac{x}{\log x}.
+    \]
+    \item The zeros of $\zeta(s)$ control deviations from this leading approximation.
+    \item Related prime phenomena:
+    \begin{itemize}
+        \item Mersenne primes: $2^p-1$ with $p$ prime necessary but not sufficient.
+        \item Twin primes: pairs $(p,p+2)$ such as $(29,31)$.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Visualizing Zeta Zeros}
+
+\begin{frame}{Visualizing Zeta Function Zeros}
+\begin{itemize}
+    \item Non-trivial zeros lie in the critical strip
+    \[
+    0<\Re(s)<1.
+    \]
+    \item The Riemann Hypothesis asserts that all non-trivial zeros lie on
+    \[
+    \Re(s)=\tfrac12.
+    \]
+    \item Three useful visualization modes:
+    \begin{itemize}
+        \item \textbf{Phase plots}: hue encodes $\arg(\zeta(s))$ and brightness encodes $|\zeta(s)|$.
+        \item \textbf{Contour plots}: intersections of $\Re(\zeta(s))=0$ and $\Im(\zeta(s))=0$ locate zeros.
+        \item \textbf{3D surfaces}: minima of $|\zeta(s)|$ reveal the zero set geometrically.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Phase Plot (Domain Coloring)}
+\centering
+% Update the filename below if your local file uses a different name.
+\includegraphics[width=0.82\textwidth,height=0.66\textheight,keepaspectratio]{zeta_phase_corrected.png}
+
+\vspace{0.4em}
+{\small Hue represents $\arg(\zeta(s))$, brightness represents $|\zeta(s)|$, and zeros appear as phase singularities near $\Re(s)=\tfrac12$.}
+\end{frame}
+
+\begin{frame}{Three-Dimensional Surface of $|\zeta(s)|$}
+\centering
+% Update the filename below if your local file uses a different name.
+\includegraphics[width=0.82\textwidth,height=0.66\textheight,keepaspectratio]{z3d.png}
+
+\vspace{0.4em}
+{\small The non-trivial zeros appear as localized minima of $|\zeta(s)|$ rather than as a continuous trench along the critical line.}
+\end{frame}
+
+\begin{frame}{Numerical Contour Plot in the Critical Strip}
+\centering
+% Update the filename below if your local file uses a different name.
+\includegraphics[width=0.82\textwidth,height=0.66\textheight,keepaspectratio]{rzt.png}
+
+\vspace{0.4em}
+{\small Red curves show $\Re(\zeta(s))=0$, green curves show $\Im(\zeta(s))=0$, and their intersections align numerically with the critical line.}
+\end{frame}
+
+\section{The Critical Line and RH}
+
+\begin{frame}{The Critical Line and the Riemann Hypothesis}
+\begin{itemize}
+    \item Functional equation:
+    \[
+    \zeta(s)=2^s\pi^{s-1}\sin\!\left(\frac{\pi s}{2}\right)\Gamma(1-s)\zeta(1-s).
+    \]
+    \item This relates $s$ and $1-s$ and extends $\zeta(s)$ to the complex plane apart from the pole at $s=1$.
+    \item \textbf{Riemann Hypothesis:} every non-trivial zero lies on $\Re(s)=\tfrac12$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why the Hypothesis Matters}
+\begin{itemize}
+    \item Extensive computation has verified enormous numbers of zeros on the critical line.
+    \item The zeros enter prime-counting formulas such as
+    \[
+    \pi(x)=\mathrm{Li}(x)-\sum_\rho \mathrm{Li}(x^\rho)+\text{lower-order terms}.
+    \]
+    \item RH implies an optimal-order error term in the Prime Number Theorem:
+    \[
+    \pi(x)=\mathrm{Li}(x)+O\!\left(x^{1/2}\log x\right).
+    \]
+\end{itemize}
+\end{frame}
+
+\section{Explicit Formula and Prime Density}
+
+\begin{frame}{Prime Density and the Explicit Formula}
+\begin{itemize}
+    \item A central bridge between zeros and primes is the explicit formula
+    \[
+    \psi(x)=x-\sum_\rho \frac{x^\rho}{\rho}-\log(2\pi)-\frac12\log(1-x^{-2}).
+    \]
+    \item The zeros contribute oscillatory corrections to the main term $x$.
+    \item Related asymptotics:
+    \[
+    P(n\text{ prime})\approx \frac{1}{\ln n}, \qquad \mathrm{Li}(x)\sim \frac{x}{\ln x}.
+    \]
+\end{itemize}
+\end{frame}
+
+\section{Computational and AI Methods}
+
+\begin{frame}{Computational and AI-Assisted Approaches}
+\begin{itemize}
+    \item \textbf{Numerical contour analysis:} approximate zeros and visualize local spacing behavior.
+    \item \textbf{Automated theorem search:} explore large proof spaces and useful intermediate lemmas.
+    \item \textbf{Large-scale verification:} test zero locations to increasing heights.
+    \item These methods do \emph{not} prove RH, but they expand the range of meaningful experiments.
+\end{itemize}
+\end{frame}
+
+\section{Cryptographic Motivation}
+
+\begin{frame}{Cryptographic Motivation}
+\begin{itemize}
+    \item Classical ciphers (Caesar shifts, keyword substitution) are broken by brute force or frequency analysis.
+    \item Modern public-key systems rely on hard number-theoretic problems such as integer factorization.
+\end{itemize}
+
+\vspace{0.6em}
+\centering
+\begin{tabular}{lccc}
+\toprule
+System & Key space / scale & Attack & Break time \\
+\midrule
+Caesar cipher & 25 keys & Brute force & Instant \\
+Keyword substitution & structured & Frequency analysis & Seconds--minutes \\
+DES (56-bit) & $2^{56}$ & Exhaustive search & Hours--days \\
+RSA-2048 & very large modulus & Factorization & Infeasible classically \\
+\bottomrule
+\end{tabular}
+\end{frame}
+
+\section{Conclusion and Future Work}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+    \item Euler opened one door into the zeta function through special values such as $\zeta(2)=\pi^2/6$.
+    \item Riemann opened a deeper door: the zeros of $\zeta(s)$ govern the fine structure of the primes.
+    \item Computational plots make this connection concrete, even though they do not constitute a proof.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Future Work}
+\begin{itemize}
+    \item High-precision numerical approximation of $\zeta(s)$ along the critical line.
+    \item Improved visualization using domain coloring, contour plots, and surface plots.
+    \item Computational experiments with truncated explicit formulas for $\psi(x)$ and $\pi(x)$.
+    \item Exploratory AI-based analysis of zero spacing, clustering, and prime-related data.
+\end{itemize}
+\end{frame}
+
+\appendix
+\section{Appendix: Reproducibility}
+
+\begin{frame}[fragile]{Appendix: Python Code for the Phase Plot}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+import mpmath as mp
+from matplotlib.colors import hsv_to_rgb
+
+mp.dps = 30
+re_vals = np.linspace(0.35, 0.65, 500)
+im_vals = np.linspace(10.0, 32.0, 700)
+Re, Im = np.meshgrid(re_vals, im_vals)
+phase = np.zeros_like(Re, dtype=float)
+magnitude = np.zeros_like(Re, dtype=float)
+
+for i in range(Re.shape[0]):
+    for j in range(Re.shape[1]):
+        s = mp.mpc(float(Re[i, j]), float(Im[i, j]))
+        z = mp.zeta(s)
+        phase[i, j] = float(mp.arg(z))
+        magnitude[i, j] = float(abs(z))
+
+phase_norm = (phase + np.pi) / (2 * np.pi)
+value = 1.0 / (1.0 + magnitude)
+hsv = np.dstack((phase_norm, np.ones_like(value), value))
+rgb = hsv_to_rgb(hsv)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Appendix: Python Code for the Surface Plot}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+import mpmath as mp
+from mpl_toolkits.mplot3d import Axes3D
+
+mp.dps = 30
+re_vals = np.linspace(0.2, 0.8, 160)
+im_vals = np.linspace(10.0, 35.0, 220)
+Re, Im = np.meshgrid(re_vals, im_vals)
+Z_abs = np.zeros_like(Re, dtype=float)
+
+for i in range(Re.shape[0]):
+    for j in range(Re.shape[1]):
+        s = mp.mpc(float(Re[i, j]), float(Im[i, j]))
+        Z_abs[i, j] = float(abs(mp.zeta(s)))
+
+Z_plot = np.log1p(Z_abs)
+# plot_surface(Re, Im, Z_plot) and save figure as z3d.png
+\end{lstlisting}
+\end{frame}
+
+\setbeamercolor{background canvas}{bg=CCNUMaize}
+\begin{frame}[plain,t]
+\vspace{100pt}
+\centering
+\Large Thank you
+\end{frame}
+
+\end{document}

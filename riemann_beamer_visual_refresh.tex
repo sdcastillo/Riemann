@@ -1,0 +1,356 @@
+\documentclass[aspectratio=43]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{items}[circle]
+
+\usepackage{slashed}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cancel}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+
+\graphicspath{{plots/}{./}}
+
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
+
+\def\mydate{\leavevmode\hbox{\the\year-\twodigits\month-\twodigits\day}}
+\def\twodigits#1{\ifnum#1<10 0\fi\the#1}
+
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright
+  \centering#2
+  \end{minipage}%
+  }%
+}
+
+% ---------- Palette ----------
+\definecolor{bg}{HTML}{F7F8FC}
+\definecolor{ink}{HTML}{0F172A}
+\definecolor{muted}{HTML}{475569}
+\definecolor{navy}{HTML}{0B1020}
+\definecolor{navy2}{HTML}{11182E}
+\definecolor{violet}{HTML}{7C3AED}
+\definecolor{violet2}{HTML}{A78BFA}
+\definecolor{electric}{HTML}{22D3EE}
+\definecolor{rose}{HTML}{F43F5E}
+\definecolor{line}{HTML}{D6DAE8}
+\definecolor{panel}{HTML}{EEF2FF}
+
+% ---------- Global styling ----------
+\setbeamercolor{background canvas}{bg=bg}
+\setbeamercolor{normal text}{fg=ink,bg=bg}
+\setbeamercolor{frametitle}{fg=white,bg=navy}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{subtitle}{fg=violet2}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{institute}{fg=violet2}
+\setbeamercolor{date}{fg=violet2}
+
+\setbeamercolor{palette primary}{fg=white,bg=navy}
+\setbeamercolor{palette secondary}{fg=white,bg=navy2}
+\setbeamercolor{palette tertiary}{fg=white,bg=violet}
+\setbeamercolor{palette quaternary}{fg=white,bg=electric}
+
+\setbeamercolor{section in toc}{fg=violet}
+\setbeamercolor{subsection in toc}{fg=muted}
+\setbeamercolor{itemize item}{fg=violet}
+\setbeamercolor{itemize subitem}{fg=electric}
+\setbeamercolor{enumerate item}{fg=violet}
+\setbeamercolor{block title}{fg=white,bg=violet}
+\setbeamercolor{block body}{fg=ink,bg=panel}
+\setbeamercolor{alerted text}{fg=rose}
+\setbeamercolor{caption name}{fg=violet}
+
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{size=\small}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamerfont{author}{series=\bfseries}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=violet,
+  urlcolor=electric,
+  citecolor=rose
+}
+
+\setbeamertemplate{frametitle}{
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.9cm,dp=0.24cm,leftskip=0.42cm,rightskip=0.28cm]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}
+  {\color{electric}\rule{\paperwidth}{0.8pt}}
+}
+
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=0.33cm,dp=0.14cm,leftskip=0.35cm]{author in head/foot}
+    {\color{muted}\scriptsize\insertshorttitle}
+  \end{beamercolorbox}
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=0.33cm,dp=0.14cm,rightskip=0.35cm]{date in head/foot}
+    \hfill{\color{muted}\scriptsize\insertframenumber/\inserttotalframenumber}
+  \end{beamercolorbox}}
+}
+
+\setbeamertemplate{title page}{
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[navy] (current page.south west) rectangle (current page.north east);
+    \shade[left color=violet,right color=electric,opacity=0.18]
+      ([xshift=-0.8cm,yshift=1.2cm]current page.south east) circle (3.2cm);
+    \shade[left color=electric,right color=violet,opacity=0.12]
+      ([xshift=0.8cm,yshift=-0.6cm]current page.north west) circle (2.9cm);
+    \draw[electric,opacity=0.3,line width=0.7pt]
+      ([xshift=0.6cm,yshift=1.0cm]current page.south west) --
+      ([xshift=8.3cm,yshift=1.0cm]current page.south west);
+  \end{tikzpicture}
+  \vspace*{1.35cm}
+  \begin{flushleft}
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+    \vspace{0.25cm}
+    {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}Computational visualization, prime structure, and experimental mathematics\par}
+    \vspace{1.0cm}
+    {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
+    \vspace{0.12cm}
+    {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}
+    \vspace{0.35cm}
+    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+  \end{flushleft}
+  \vfill
+}
+
+\def\meetingname{PredictiveInsightsAI.com}
+
+\title[\meetingname]{The Riemann Zeta Function:\\Zeros, the Critical Line, and Computational Exploration}
+\author[Samuel Castillo]{Samuel Castillo}
+\institute[Predictive Insights AI]{www.PredictiveInsightsAI.com}
+\date[\mydate]{\meetingname\\\today}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}{Roadmap}
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Introduction}
+\begin{block}{From Euler to Riemann}
+Euler's resolution of the Basel problem revealed that the zeta function already
+encodes remarkable arithmetic structure at special values such as
+\[
+\zeta(2)=\frac{\pi^2}{6}.
+\]
+Riemann's later insight extended this perspective dramatically: after analytic
+continuation, the non-trivial zeros of the zeta function govern the fine-scale
+distribution of prime numbers.
+\end{block}
+\end{frame}
+
+\begin{frame}{The Riemann Zeta Function}
+\begin{itemize}
+\item The Riemann zeta function occupies a central place in analytic number theory.
+\item For $\Re(s) > 1$, it is defined by the convergent series
+\[
+\zeta(s)=\sum_{n=1}^{\infty}\frac{1}{n^s}.
+\]
+\item Euler showed that this function also admits the product expansion
+\[
+\zeta(s)=\prod_{p}\left(1-p^{-s}\right)^{-1},
+\]
+which connects analysis directly to the prime numbers.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Central Thesis}
+\begin{block}{Big idea}
+The zeros of $\zeta(s)$ are not merely analytic curiosities. They are structural
+features that govern the oscillatory behavior of prime counting.
+\end{block}
+
+\medskip
+This viewpoint culminates in the Riemann Hypothesis, which asserts that every
+non-trivial zero lies on the critical line
+\[
+\Re(s)=\tfrac{1}{2}.
+\]
+\end{frame}
+
+\begin{frame}{Prime Number Distribution}
+This broader perspective also situates related phenomena in prime number theory.
+\begin{itemize}
+\item \textbf{Mersenne primes:} numbers of the form $2^p-1$, where $p$ must be prime for $2^p-1$ to have any chance of being prime.
+\item \textbf{Twin primes:} pairs of primes differing by $2$, such as $(29,31)$.
+\item The Twin Prime Conjecture asserts that infinitely many such pairs exist.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Where the Zeros Live}
+The non-trivial zeros of the Riemann zeta function lie in the critical strip
+\[
+0<\Re(s)<1.
+\]
+Extensive numerical evidence suggests that these zeros lie on the critical line
+\[
+\Re(s)=\frac{1}{2},
+\]
+as asserted by the Riemann Hypothesis.
+
+\medskip
+Visualization techniques provide useful geometric intuition for the analytic
+structure of $\zeta(s)$ in the complex plane.
+\end{frame}
+
+\begin{frame}{Visualization Modes}
+\begin{itemize}
+    \item \textbf{Phase Plots:} hue tracks $\arg(\zeta(s))$ while brightness tracks $|\zeta(s)|$; zeros appear as phase singularities.
+    \item \textbf{Contour Plots:} the curves $\Re(\zeta(s))=0$ and $\Im(\zeta(s))=0$ intersect exactly at zeros.
+    \item \textbf{Three-Dimensional Surfaces:} the graph of $|\zeta(s)|$ creates a landscape whose minima align with non-trivial zeros.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Phase Graph}
+\centering
+\includegraphics[width=0.79\textwidth]{zeta_phase.png}
+
+\vspace{0.12cm}
+{\scriptsize \color{muted}Hue represents $\arg(\zeta(s))$ and brightness represents $|\zeta(s)|$. The dashed line marks $\Re(s)=\tfrac{1}{2}$.}
+\end{frame}
+
+\begin{frame}{Surface Plot}
+\centering
+\includegraphics[width=0.84\textwidth]{z3d.png}
+
+\vspace{0.12cm}
+{\scriptsize \color{muted}The minima of $\log(1+|\zeta(s)|)$ correspond to points where $\zeta(s)$ approaches zero.}
+\end{frame}
+
+\begin{frame}{Takeaway}
+These visual representations reinforce the interpretation of the zeros as
+structural features governing the behavior of $\zeta(s)$, and by extension,
+the distribution of prime numbers through the explicit formula.
+\end{frame}
+
+\section{Computation}
+
+\begin{frame}{Computational Consequences}
+\begin{itemize}
+    \item \textbf{Computational Evidence:} extensive computations have verified enormous numbers of non-trivial zeros on the critical line.
+    \item \textbf{Prime Counting:} the zeros appear explicitly in formulas such as
+    \[
+    \pi(x)=\mathrm{Li}(x)-\sum_{\rho}\mathrm{Li}(x^\rho)+\text{lower-order terms}.
+    \]
+    \item \textbf{Error Bounds:} RH implies the near-optimal error term
+    \[
+    \pi(x)=\mathrm{Li}(x)+O\!\left(x^{1/2}\log x\right).
+    \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Big Formula}
+A central bridge between the zeros of $\zeta(s)$ and the distribution of primes
+is the explicit formula
+\[
+\psi(x)=x-\sum_{\rho}\frac{x^\rho}{\rho}-\log(2\pi)-\frac{1}{2}\log(1-x^{-2}),
+\]
+where $\psi(x)$ is the Chebyshev function and the sum runs over non-trivial
+zeros $\rho$ of $\zeta(s)$.
+
+\medskip
+This formula shows that the zeros contribute oscillatory corrections to the main term $x$.
+\end{frame}
+
+\begin{frame}{Prime Analytics}
+\begin{itemize}
+    \item \textbf{Numerical contour analysis:} visualize level sets of $\Re(\zeta(s))$ and $\Im(\zeta(s))$, approximate zeros, and study local spacing.
+    \item \textbf{Automated theorem search:} machine-assisted systems can explore large proof spaces and intermediate lemmas.
+    \item \textbf{Large-scale verification:} distributed computation continues to test zero locations to increasing heights.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classical vs Modern Ciphers}
+The contrast between classical and modern cryptography highlights why prime
+numbers matter outside pure mathematics.
+
+\begin{block}{Classical example}
+A Caesar cipher shifts each letter by a fixed number of positions. A slightly more
+complex variant uses a keyword substitution alphabet such as
+\[
+\text{KEYWORDABCFGHIJLMNPQSTUVXZ}.
+\]
+\end{block}
+
+These systems are weak because they leak repeated letters, frequency patterns, and key-space structure.
+\end{frame}
+
+\begin{frame}{Cipher Comparison}
+\small
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.45cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2.35cm}}
+\toprule
+\textbf{System} & \textbf{Key Space Size} & \textbf{Attack Method} & \textbf{Time to Break} \\
+\midrule
+Caesar Cipher & 25 keys & Brute force & Instant ($<1$ ms) \\
+Keyword Substitution & Large theoretical space & Frequency analysis & Seconds--minutes \\
+DES (56-bit) & $2^{56}$ & Exhaustive search & Hours--days \\
+RSA-512 & Large composite modulus & Integer factorization & Hours--months \\
+RSA-2048 & Very large composite modulus & Integer factorization & Infeasible classically \\
+\bottomrule
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Contour Plot}
+\centering
+\includegraphics[width=0.76\textwidth]{rzt.png}
+
+\vspace{0.12cm}
+{\scriptsize \color{muted}Red curves mark $\Re(\zeta(s))=0$ and green curves mark $\Im(\zeta(s))=0$. Their intersections align near $\Re(s)=\tfrac{1}{2}$.}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item The Riemann Hypothesis links complex analysis with the fine structure of prime distribution.
+\item Euler opened one door into the zeta function through special values.
+\item Riemann opened another through the zeros, which govern oscillatory structure in the primes.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why the Visuals Matter}
+The contour plot makes the geometry concrete:
+\begin{itemize}
+\item intersections of $\Re(\zeta(s))=0$ and $\Im(\zeta(s))=0$ reveal non-trivial zeros;
+\item the explicit formula ties those zeros directly to prime irregularity;
+\item computation and visualization create a practical way to explore deep analytic structure.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Future Work}
+Future work will extend the computational side of this project in four main directions:
+\begin{itemize}
+    \item high-precision numerical approximation of $\zeta(s)$ along the critical line;
+    \item richer visualization, including domain coloring and surface plots;
+    \item experiments with truncated explicit formulas for $\psi(x)$ and $\pi(x)$;
+    \item exploratory AI-based analysis of zero spacing, clustering, and prime-related data.
+\end{itemize}
+\end{frame}
+
+\end{document}
