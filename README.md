@@ -1,13 +1,6 @@
 # Riemann
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UgRNtOb6joY?si=Nwx98jYb8i6DfnD6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
-Gemini said
-
-Here is an optimized, viewer-friendly description that organizes your key points into a professional and engaging format.
-
-The Quantum Approach to P vs NP and the Riemann Hypothesis
+https://youtu.be/UgRNtOb6joY?si=YEPT820qiTTi9QgP
 
 Does every efficiently verifiable problem also have an efficiently solvable answer?
 
