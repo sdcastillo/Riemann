@@ -27,6 +27,9 @@ samwiki: true
   </aside>
 </section>
 
+![Unsolved](unsolved_problems.jpeg)
+
+
 # AI and the Millennium Prize Problems: a claim, not a prize
 
 *Mathematics and artificial intelligence · 6 October 2026*
